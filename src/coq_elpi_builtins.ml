@@ -911,11 +911,12 @@ let cinfo_make state types using =
   Declare.CInfo.make ?using
 let eval_of_constant c =
   match c with
-  | Variable v -> Tacred.EvalVarRef v
-  | Constant c -> Tacred.EvalConstRef c
-let eval_to_oeval = function
-| Tacred.EvalVarRef v -> Names.VarKey v
-| Tacred.EvalConstRef c -> Names.ConstKey c
+  | Variable v -> Evaluable.EvalVarRef v
+  | Constant c ->
+      match Structures.PrimitiveProjections.find_opt c with
+      | None -> Evaluable.EvalConstRef c
+      | Some p -> Evaluable.EvalProjectionRef p
+let eval_to_oeval x = x
 let mkCLocalAssum x y z = Constrexpr.CLocalAssum(x,y,z)
 let pattern_of_glob_constr _ g = Patternops.pattern_of_glob_constr g
 let warns_of_options options = options.deprecation
