@@ -1172,9 +1172,14 @@ external pred coq.TC.declare-class i:gref.
 % returns the nodes in topological order
 external pred coq.elpi.toposort i:list (pair A (list A)), o:list A.
 
+% Type class instance priority
+kind tc-priority type.
+type tc-priority-given int -> tc-priority. % User given priority
+type tc-priority-computed int -> tc-priority. % Coq computed priority
+
 % Type class instance with priority
 kind tc-instance type.
-type tc-instance gref -> int -> tc-instance.
+type tc-instance gref -> tc-priority -> tc-instance.
 
 % [coq.TC.declare-instance GR Priority] Declare GR as a Global type class
 % instance with Priority.
@@ -1194,7 +1199,7 @@ external pred coq.TC.db-for i:gref, o:list tc-instance.
 
 % [coq.TC.get-inst-prio ClassGR InstGR InstPrio] reads the priority of an
 % instance
-external pred coq.TC.get-inst-prio i:gref, i:gref, o:int.
+external pred coq.TC.get-inst-prio i:gref, i:gref, o:tc-priority.
 
 % [coq.TC.class? GR] checks if GR is a class
 external pred coq.TC.class? i:gref.
@@ -1367,6 +1372,13 @@ external pred coq.arguments.simplification i:gref,
 % - @global! (default: false)
 external pred coq.arguments.set-simplification i:gref, 
                                                i:simplification_strategy.
+
+% [coq.arguments.reset-simplification GR] resets the behavior of the
+% simplification tactics.
+% Also resets the ! and / modifiers for the Arguments command.
+% Supported attributes:
+% - @global! (default: false)
+external pred coq.arguments.reset-simplification i:gref.
 
 % [coq.locate-abbreviation Name Abbreviation] locates an abbreviation.  It's
 % a fatal error if Name cannot be located.
